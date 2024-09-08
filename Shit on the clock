@@ -1,0 +1,58 @@
+let timer;
+let seconds = 0;
+let running = false;
+const timeDisplay = document.getElementById('time');
+const startStopBtn = document.getElementById('startStopBtn');
+const resetBtn = document.getElementById('resetBtn');
+const hourlyRateInput = document.getElementById('hourlyRate');
+const earningsDisplay = document.getElementById('earnings');
+
+startStopBtn.addEventListener('click', function() {
+    if (!running) {
+        startTimer();
+    } else {
+        stopTimer();
+    }
+});
+
+resetBtn.addEventListener('click', resetTimer);
+
+function startTimer() {
+    running = true;
+    startStopBtn.textContent = 'Stop';
+    timer = setInterval(() => {
+        seconds++;
+        updateTimeDisplay();
+        updateEarningsDisplay();
+    }, 1000);
+}
+
+function stopTimer() {
+    running = false;
+    clearInterval(timer);
+    startStopBtn.textContent = 'Start';
+}
+
+function resetTimer() {
+    running = false;
+    clearInterval(timer);
+    seconds = 0;
+    updateTimeDisplay();
+    updateEarningsDisplay();
+    startStopBtn.textContent = 'Start';
+}
+
+function updateTimeDisplay() {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    timeDisplay.textContent = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function updateEarningsDisplay() {
+    const hourlyRate = parseFloat(hourlyRateInput.value);
+    if (!isNaN(hourlyRate) && hourlyRate > 0) {
+        const earnings = (hourlyRate / 3600) * seconds;
+        earningsDisplay.textContent = earnings.toFixed(2);
+    }
+}
